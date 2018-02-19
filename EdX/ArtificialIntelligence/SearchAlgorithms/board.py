@@ -1,4 +1,6 @@
 class Board:
+	MOVES_ORDER = ['Up', 'Down', 'Left', 'Right']
+
 	def __init__(self, board_state, moves, depth, cost, board_size):
 		self._board_state = board_state
 		self._moves = moves
@@ -15,10 +17,10 @@ class Board:
 		row, col = self._get_row_col(empty_cell_index)
 
 		next_states = []
-		self.__add_board_to_lst(empty_cell_index, row - 1, col, 'Up', next_states)
-		self.__add_board_to_lst(empty_cell_index, row + 1, col, 'Down', next_states)
-		self.__add_board_to_lst(empty_cell_index, row, col - 1, 'Left', next_states)
-		self.__add_board_to_lst(empty_cell_index, row, col + 1, 'Right', next_states)
+		self.__add_board_to_lst(empty_cell_index, row - 1, col, Board.MOVES_ORDER[0], next_states)
+		self.__add_board_to_lst(empty_cell_index, row + 1, col, Board.MOVES_ORDER[1], next_states)
+		self.__add_board_to_lst(empty_cell_index, row, col - 1, Board.MOVES_ORDER[2], next_states)
+		self.__add_board_to_lst(empty_cell_index, row, col + 1, Board.MOVES_ORDER[3], next_states)
 
 		return next_states
 

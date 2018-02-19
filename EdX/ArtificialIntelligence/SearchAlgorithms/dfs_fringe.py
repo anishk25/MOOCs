@@ -11,10 +11,9 @@ class DFSFringe(Fringe):
 			self.__stack.append(boards[i])
 
 	def get_next_board(self):
-		if (len(self.__stack) > 0):
-			return self.__stack.pop()
-		else:
+		if (len(self.__stack) == 0):
 			raise Exception("no more elements left in DFS fringe")
+		return self.__stack.pop()
 
 	def get_size(self):
 		return len(self.__stack)

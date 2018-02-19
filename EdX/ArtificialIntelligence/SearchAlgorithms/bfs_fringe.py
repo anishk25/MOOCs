@@ -12,10 +12,9 @@ class BFSFringe(Fringe):
 			self.__queue.appendleft(b)
 
 	def get_next_board(self):
-		if (len(self.__queue) > 0):
-			return self.__queue.pop()
-		else:
-			raise Exception("no more elements left in BFS fringe")
+		if (len(self.__queue) == 0):
+			raise Exception("no more elements left in BFS fringe")	
+		return self.__queue.pop()
 
 	def get_size(self):
 		return len(self.__queue)

@@ -12,7 +12,7 @@ class Board:
 
 	def get_next_states(self):
 		empty_cell_index = self._board_state.index(0)
-		row, col = self.__get_row_col(empty_cell_index)
+		row, col = self._get_row_col(empty_cell_index)
 
 		next_states = []
 		self.__add_board_to_lst(empty_cell_index, row - 1, col, 'Up', next_states)
@@ -40,10 +40,10 @@ class Board:
 			new_board_state = self._board_state[:]
 			new_moves = self._moves[:] + [direction]
 			self.__switch_indices(new_board_state, empty_cell_index, new_cell_index)
-			new_board = Board(new_board_state, new_moves, self._depth + 1, self._cost + 1, self._board_size)
+			new_board = self._get_new_board(new_board_state, new_moves, self._depth + 1, self._cost + 1, self._board_size)
 			states.append(new_board)
 
-	def __get_row_col(self, index):
+	def _get_row_col(self, index):
 		return (index / self._board_size, index % self._board_size)
 
 	def __get_index(self, row, col):
@@ -54,6 +54,9 @@ class Board:
 		lst[index1] = lst[index2]
 		lst[index2] = temp
 
+	def _get_new_board(self, board_state, moves, depth, cost, board_size):
+		return Board(board_state, moves, depth, cost, board_size)
+
 	def __hash__(self):
 		return hash(tuple(self._board_state))
 
@@ -63,6 +66,8 @@ class Board:
 	def __str__(self):
 		return 'Board State: %s , Moves: %s, Depth: %d, Cost: %d, Board Size: %d' % \
 				(str(self._board_state), str(self._moves), self._depth, self._cost, self._board_size)
+
+	
 
 	@property
 	def board_state(self):

@@ -1,12 +1,15 @@
 class Board:
 	MOVES_ORDER = ['Up', 'Down', 'Left', 'Right']
 
-	def __init__(self, board_state, moves, depth, cost, board_size):
+	def __init__(self, board_state, direction, depth, cost, board_size, parent_board):
 		self._board_state = board_state
-		self._moves = moves
+		self._direction = direction
 		self._depth = depth
 		self._cost = cost
 		self._board_size = board_size
+		self._hash = hash(str(self._board_state))
+		self._parent_board = parent_board
+
 
 	def is_solved(self):
 		l = self._board_state
@@ -40,27 +43,26 @@ class Board:
 		if (new_row >= 0 and new_row < self._board_size and new_col >= 0 and new_col < self._board_size):
 			new_cell_index = self.__get_index(new_row, new_col)
 			new_board_state = self._board_state[:]
-			new_moves = self._moves[:] + [direction]
 			self.__switch_indices(new_board_state, empty_cell_index, new_cell_index)
-			new_board = self._get_new_board(new_board_state, new_moves, self._depth + 1, self._cost + 1, self._board_size)
+			new_board = self._get_new_board(new_board_state, direction, self._depth + 1, self._cost + 1, self._board_size, self)
 			states.append(new_board)
 
 	def _get_row_col(self, index):
-		return (index / self._board_size, index % self._board_size)
+		return (int(index / self._board_size), int(index % self._board_size))
 
 	def __get_index(self, row, col):
-		return (self._board_size * row) + col
+		return int((self._board_size * row) + col)
 
 	def __switch_indices(self, lst, index1, index2):
 		temp = lst[index1]
 		lst[index1] = lst[index2]
 		lst[index2] = temp
 
-	def _get_new_board(self, board_state, moves, depth, cost, board_size):
-		return Board(board_state, moves, depth, cost, board_size)
+	def _get_new_board(self, board_state, direction, depth, cost, board_size, parent_board):
+		return Board(board_state, direction, depth, cost, board_size, parent_board)
 
 	def __hash__(self):
-		return hash(tuple(self._board_state))
+		return self._hash
 
 	def __eq__(self, other):
 		return self._board_state == other.board_state
@@ -69,16 +71,9 @@ class Board:
 		return 'Board State: %s , Moves: %s, Depth: %d, Cost: %d, Board Size: %d' % \
 				(str(self._board_state), str(self._moves), self._depth, self._cost, self._board_size)
 
-	
-
 	@property
 	def board_state(self):
 		return self._board_state
-
-	@property
-	def moves(self):
-		return self._moves
-
 
 	@property
 	def depth(self):
@@ -88,7 +83,10 @@ class Board:
 	def cost(self):
 		return self._cost
 
+	@property
+	def direction(self):
+		return self._direction
 
-
-
-
+	@property
+	def parent_board(self):
+		return self._parent_board

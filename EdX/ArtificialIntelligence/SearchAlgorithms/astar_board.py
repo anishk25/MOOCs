@@ -1,8 +1,8 @@
 from board import Board
 
 class AStarBoard(Board):
-	def __init__(self, board_state, moves, depth, cost, board_size):
-		Board.__init__(self, board_state, moves, depth, cost, board_size)
+	def __init__(self, board_state, direction, depth, cost, board_size, parent_board):
+		Board.__init__(self, board_state, direction, depth, cost, board_size, parent_board)
 
 	def get_total_manhattan_dist(self):
 		total_dist = 0
@@ -12,7 +12,7 @@ class AStarBoard(Board):
 			total_dist += abs(des_row - curr_row) + abs(des_col - curr_col)
 		return total_dist
 
-	def _get_new_board(self, board_state, moves, depth, cost, board_size):
-		return AStarBoard(board_state, moves, depth, cost, board_size)
+	def _get_new_board(self, board_state, direction, depth, cost, board_size, parent_board):
+		return AStarBoard(board_state, direction, depth, cost, board_size, parent_board)
 
 	

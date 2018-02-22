@@ -4,14 +4,18 @@ from collections import defaultdict
 import heapq
 
 class AStarFringe(Fringe):
+
 	def __init__(self):
+		Fringe.__init__(self)
 		self.__priority_que = []
 
 	def add_boards(self, boards):
 		for b in boards:
-			manhattan_dist = b.get_total_manhattan_dist()
-			total_cost = manhattan_dist + b.cost
-			heapq.heappush(self.__priority_que, (total_cost, b))
+			if b not in self._fringe_set:
+				manhattan_dist = b.get_total_manhattan_dist()
+				total_cost = manhattan_dist + b.cost
+				self._fringe_set.add(b)
+				heapq.heappush(self.__priority_que, (total_cost, b))
 
 	def get_next_board(self):
 		if (len(self.__priority_que) == 0):
@@ -20,10 +24,15 @@ class AStarFringe(Fringe):
 		tied_boards = defaultdict(list)
 
 		min_score, _ = self.__priority_que[0] # peeking at top of the queue
-		while(self.__priority_que[0][0] == min_score && self.get_size() > 0):
+
+		# edge case where there is only one board in the queue
+		if (self.get_size() == 1):
+			_,board = heapq.heappop(self.__priority_que)
+			return board
+
+		while(self.get_size() > 0 and self.__priority_que[0][0] == min_score):
 			score, board = heapq.heappop(self.__priority_que)
-			direction = board.moves[len(board.moves) - 1]
-			heapq.heappush(tied_boards[direction], (board.cost, score, board))
+			heapq.heappush(tied_boards[board.direction], (board.cost, score, board))
 
 		selected_board = None
 		for direction in Board.MOVES_ORDER:
@@ -32,12 +41,11 @@ class AStarFringe(Fringe):
 				break
 
 		for direction in Board.MOVES_ORDER:
-			for _,score,board in tied_boards[direction]
+			for _,score,board in tied_boards[direction]:
 				heapq.heappush(self.__priority_que, (score, board))
 
+		self._fringe_set.remove(selected_board)
 		return selected_board
-
-
 
 	def get_size(self):
 		return len(self.__priority_que)
